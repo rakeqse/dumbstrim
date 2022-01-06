@@ -1,4 +1,3 @@
-import datetime
 import cv2
 import numpy as np
 from flask import Flask, Response, render_template
@@ -14,6 +13,10 @@ face_cascade.load(cv2.data.haarcascades +
 
 eye_cascade = cv2.CascadeClassifier()
 eye_cascade.load(cv2.data.haarcascades + "haarcascade_eye.xml")
+
+# Define the codec and create VideoWriter object
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+out = cv2.VideoWriter('output2.avi', fourcc, 20.0, (640,  480))
 
 
 def detectface(frame):
@@ -52,6 +55,7 @@ def decodeNp(data):
     nparr = np.frombuffer(data, dtype=np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     frame = detectface(img)
+    out.write(frame)
     ret, jpg = cv2.imencode('.jpg', frame)
     return jpg.tobytes()
 
